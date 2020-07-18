@@ -84,96 +84,94 @@ class LoginActivity : AppCompatActivity() {
                         }
 
                         override fun onCancelled(firebaseError: DatabaseError) {}
-                    }
+                    })
                 }
+
+                //プログレスバーを非表示にする
+                progressBar.visibility = View.GONE
+
+                //Activityを閉じる
+                finish()
+
+            } else {
+                //失敗した場合
+                //エラーを表示する
+                val view = findViewById<View>(android.R.id.content)
+                Snackbar.make(view, "ログインに失敗しました", Snackbar.LENGTH_LONG).show()
+
+                //プログレスバーを非表示にする
+                progressBar.visibility = View.GONE
             }
-
-            //プログレスバーを非表示にする
-            progressBar.visibility = View.GONE
-
-            //Activityを閉じる
-            finish()
-
-        } else {
-            //失敗した場合
-            //エラーを表示する
-            val view = findViewById<View>(android.R.id.content)
-            Snackbar.make(view, "ログインに失敗しました", Snackbar.LENGTH_LONG).show()
-
-            //プログレスバーを非表示にする
-            progressBar.visibility = View.GONE
-        }
-    }
-
-    //タイトルの設定
-    title = "ログイン"
-
-    createButton.setOnClickListener
-    {
-        v ->
-        //キーボードが出てたら閉じる
-        val im = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        im.hideSoftInputFromWindow(v.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
-
-        val email = emailText.text.toString()
-        val password = passwordText.text.toString()
-        val name = nameText.text.toString()
-
-        if (email.length != 0 && password.length >= 6 && name.length != 0) {
-            //ログイン時に表示名を保存するようにプラグを立てる
-            mIsCreateAccount = true
-
-            createAccount(email, password)
-        } else {
-            //エラーを表示する
-            Snackbar.make(v, "正しく入力してください", Snackbar.LENGTH_LONG).show()
         }
 
-        loginButton.setOnClickListener { v ->
+        //タイトルの設定
+        title = "ログイン"
+
+        createButton.setOnClickListener() { v ->
             //キーボードが出てたら閉じる
             val im = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             im.hideSoftInputFromWindow(v.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
 
             val email = emailText.text.toString()
             val password = passwordText.text.toString()
+            val name = nameText.text.toString()
 
-            if (email.length != 0 && password.length >= 6) {
-                //プラグを落としておく
-                mIsCreateAccount = false
+            if (email.length != 0 && password.length >= 6 && name.length != 0) {
+                //ログイン時に表示名を保存するようにプラグを立てる
+                mIsCreateAccount = true
 
-                login(email, password)
+                createAccount(email, password)
             } else {
                 //エラーを表示する
                 Snackbar.make(v, "正しく入力してください", Snackbar.LENGTH_LONG).show()
             }
+
+            loginButton.setOnClickListener { v ->
+                //キーボードが出てたら閉じる
+                val im = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                im.hideSoftInputFromWindow(v.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
+
+                val email = emailText.text.toString()
+                val password = passwordText.text.toString()
+
+                if (email.length != 0 && password.length >= 6) {
+                    //プラグを落としておく
+                    mIsCreateAccount = false
+
+                    login(email, password)
+                } else {
+                    //エラーを表示する
+                    Snackbar.make(v, "正しく入力してください", Snackbar.LENGTH_LONG).show()
+                }
+            }
         }
     }
-}
 
 
-private fun createAccount(email: String, password: String) {
-    //プログレスバーを表示する
-    progressBar.visibility = View.VISIBLE
+    private fun createAccount(email: String, password: String) {
+        //プログレスバーを表示する
+        progressBar.visibility = View.VISIBLE
 
-    //アカウントを作成する
-    mAuth.createUserWithEmailAndPassword(email, password)
-        .addOnCompleteListener(mCreateAccountListener)
-}
+        //アカウントを作成する
+        mAuth.createUserWithEmailAndPassword(email, password)
+            .addOnCompleteListener(mCreateAccountListener)
+    }
 
-private fun login(email: String, password: String) {
-    //プログレスバーを表示する
-    progressBar.visibility = View.VISIBLE
+    private fun login(email: String, password: String) {
+        //プログレスバーを表示する
+        progressBar.visibility = View.VISIBLE
 
-    //ログインする
-    mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(mLoginListener)
-}
+        //ログインする
+        mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(mLoginListener)
+    }
 
-private fun saveName(name: String) {
-    //Preferenceに保存する
-    val sp = PreferenceManager.getDefaultSharedPreferences(this)
-    val editor = sp.edit()
-    editor.putString(NameKEY, name)
-    editor.commit()
+    private fun saveName(name: String) {
+        //Preferenceに保存する
+        val sp = PreferenceManager.getDefaultSharedPreferences(this)
+        val editor = sp.edit()
+        editor.putString(NameKEY, name)
+        editor.commit()
+    }
 }
 
 
