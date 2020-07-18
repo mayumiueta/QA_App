@@ -102,7 +102,7 @@ class LoginActivity : AppCompatActivity() {
             progressBar.visibility = View.GONE
         }
     }
-    
+
     //タイトルの設定
     title = "ログイン"
 
@@ -144,6 +144,16 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 }
+
+//アカウント作成処理のリスナー
+mCreateAccountListener{ task ->
+    if (task.isSuccsessful){
+        //成功した場合
+        //ログインを行う
+        val email = emailText.text.toString()
+        val password = passwordText.text.toString
+    }
+
 
 private fun createAccount(email:String, password: String) {
     //プログレスバーを表示する
